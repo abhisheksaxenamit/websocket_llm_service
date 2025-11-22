@@ -67,10 +67,17 @@ class ChatbotAPI:
             / "audio"
             / f"response_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
         )
+        
         # ensure the audio directory exists
         speech_file.parent.mkdir(parents=True, exist_ok=True)
-        response = self.client.audio.speech.create(
-            model="tts-1-hd", voice="echo", input=response_text
-        )
-        response.stream_to_file(speech_file)
-        playsound(speech_file)
+        try:
+            response = self.client.audio.speech.create(
+                model="tts-1-hd", voice="echo", input=response_text
+            )
+            print(f"Generating speech audio at: {response}")
+            response.stream_to_file(speech_file)
+            playsound(speech_file)
+        except OpenAIError as e:
+            print(f"An error occurred while generating speech audio. {e}")
+        except AuthenticationError as e:
+            print("Authentication failed. Please check your API key.")
