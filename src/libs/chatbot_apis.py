@@ -17,7 +17,6 @@ class ChatbotAPI:
         # this is the model for the chatbot defined by the user
         self.model = model
 
-
     async def send_message(self, message: str):
         """Send a message to the chatbot API."""
         # Here the message is coming from the user
