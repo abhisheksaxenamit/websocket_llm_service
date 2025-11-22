@@ -15,7 +15,7 @@ Client → WebSocket message with text input → your service →
 <img width="798" height="375" alt="image" src="https://github.com/user-attachments/assets/5f33f59e-61c8-4156-8920-2cae689e4233" />
 
 Approach to this problem:
-1. Work on the APIs provided and learn its implementation. Creating a simple HTTP client directly to the OpenAI server.
+1. Work on the APIs provided and learn its implementation. Creating a simple HTTP client directly to the OpenAI server. **(Done)**
 2. Create a Websocket service and check connection with different end points.
 3. Building a Client to the Websocket service and check the connection to the OpenAI end point
 4. Integrate the complete logic in Step1 to the Websocket service
