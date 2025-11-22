@@ -38,6 +38,15 @@ class ChatbotAPI:
             print("Authentication failed. Please check your API key.")
         except OpenAIError as e:
             print("An error occurred while communicating with the OpenAI API.")
+        task1 = asyncio.create_task(
+            asyncio.to_thread(self.speak_response, response_content)
+        )
+        task2 = asyncio.create_task(
+            asyncio.to_thread(self.print_chat, response_content)
+        )
+        await task1
+        await task2
+
     def print_chat(self, response_text: str):
         """Print the latest chat response."""
         print(f"Assistant: {response_text}")
