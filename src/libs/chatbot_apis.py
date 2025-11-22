@@ -1,5 +1,8 @@
 from openai import AuthenticationError, OpenAIError
 import asyncio
+from datetime import datetime
+from playsound import playsound
+from pathlib import Path
 
 class ChatbotAPI():
     '''Base class for chatbot APIs.'''
@@ -34,12 +37,14 @@ class ChatbotAPI():
             # Appending the context with the assistant response to maintain the conversation
             self.context.append({"role": "assistant", "content": response_content})
         except AuthenticationError as e:
-            raise AuthenticationError("Authentication failed. Please check your API key.") from e
+            print("Authentication failed. Please check your API key.")
         except OpenAIError as e:
-            raise OpenAIError("An error occurred while communicating with the OpenAI API.") from e
-        await self.print_chat_history()
-
-    async def print_chat_history(self):
+            print("An error occurred while communicating with the OpenAI API.")
+    def print_chat(self, response_text: str):
+        '''Print the latest chat response.'''
+        print(f"Assistant: {response_text}")
+    
+    def print_chat_history(self):
         '''Print the chat history.'''
         for message in self.context:
             if message['role'] == "user":
