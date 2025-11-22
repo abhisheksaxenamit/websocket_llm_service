@@ -50,3 +50,19 @@ class ChatbotAPI:
             elif message["role"] == "assistant":
                 print(f"Assistant: {message['content']}")
 
+    def speak_response(self, response_text: str):
+        """Convert text response to speech and play it."""
+        # This is a placeholder for TTS implementationq
+        # You can integrate any TTS library here
+        speech_file = (
+            Path(__file__).parent
+            / "audio"
+            / f"response_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp3"
+        )
+        # ensure the audio directory exists
+        speech_file.parent.mkdir(parents=True, exist_ok=True)
+        response = self.client.audio.speech.create(
+            model="tts-1-hd", voice="echo", input=response_text
+        )
+        response.stream_to_file(speech_file)
+        playsound(speech_file)
