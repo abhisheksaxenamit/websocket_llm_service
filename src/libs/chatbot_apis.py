@@ -13,7 +13,7 @@ class ChatbotAPI:
         self.client = client
         # Context defines the behaviour of the chatbot
         # There are 3 parts to communicating: system, user and assistant
-        self.context = [{"role": "system", "content": "You are a helpful assistant."}]
+        self.context = [{"role": "system", "content": "You are a helpful assistant. concise answers."}]
         # this is the model for the chatbot defined by the user
         self.model = model
 

@@ -16,7 +16,7 @@ def get_config(config_path: str) -> Namespace:
 async def main():
     ''' Main function to start the client and chatbot API.'''
     config = get_config(Path(__file__).parent / 'libs' / 'config.json')
-    print(f"Loaded configuration: {config}")
+    # print(f"Loaded configuration: {config}")
     client = OpenAI(api_key=config.api_key)
     chatbot_api = ChatbotAPI(client, model=config.model)
     while True:
