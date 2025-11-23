@@ -16,11 +16,13 @@ class WebSocketServerAPI:
     
     async def start(self) -> None:
         """Start the WebSocket server."""
+        try:
+            async with websockets.serve(self.handle_connection, self.host, self.port, open_timeout=None):
+                print(f"WebSocket server started at ws://{self.host}:{self.port}")
+                await asyncio.Future()  # Run forever
+        except Exception as e:
+            print(f"Failed to start WebSocket server: {self.host}:{self.port}")
         
-        async with websockets.serve(self.handle_connection, self.host, self.port, open_timeout=None):
-            print(f"WebSocket server started at ws://{self.host}:{self.port}")
-            await asyncio.Future()  # Run forever
-    
     async def do_api_handshake(self, websocket) -> str:
         """ Perform API handshake to get api_key from client."""
         raw_handshake = await websocket.recv()
