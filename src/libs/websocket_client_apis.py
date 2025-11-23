@@ -19,7 +19,7 @@ class WebSocketClientAPI:
         """ Open connection to websocket server and chat with the openai bot."""
         try:
             async with websockets.connect(self.uri, ) as websocket:
-                # Perform API handshake needed to send api_key
+                # Perform API handshake needed to send api_key from client to server
                 handshake_request = self.create_api_handshake()
                 await websocket.send(handshake_request)
                 handshake_response = await websocket.recv()
