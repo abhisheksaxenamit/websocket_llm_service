@@ -1,0 +1,6 @@
+{
+    "server_host": "127.0.0.1",
+    "server_port": 8765,
+    "model_text": "gpt-4o-mini",
+    "model_audio": "tts-1-hd"
+}

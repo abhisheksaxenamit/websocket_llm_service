@@ -8,14 +8,15 @@ from pathlib import Path
 class ChatbotAPI:
     """Base class for chatbot APIs."""
 
-    def __init__(self, client, model: str):
+    def __init__(self, client, model_text: str, model_audio: str):
         """Initialise the Chatbot with the client to openai"""
         self.client = client
         # Context defines the behaviour of the chatbot
         # There are 3 parts to communicating: system, user and assistant
         self.context = [{"role": "system", "content": "You are a helpful assistant. concise answers."}]
         # this is the model for the chatbot defined by the user
-        self.model = model
+        self.model_text = model_text
+        self.model_audio = model_audio
 
     async def send_message(self, message: str):
         """Send a message to the chatbot API."""
@@ -25,7 +26,7 @@ class ChatbotAPI:
         try:
             # Sending the message to the openai client
             response = self.client.chat.completions.create(
-                model=self.model, messages=self.context
+                model=self.model_text, messages=self.context
             )
             # print(f"Response received: {response.choices[0].message.content}")
             # Getting the response from the assistant
@@ -35,6 +36,7 @@ class ChatbotAPI:
             self.context.append({"role": "assistant", "content": response_content})
         except AuthenticationError as e:
             print("Authentication failed. Please check your API key.")
+            return {"text": "Authentication failed. Please check your API key.", "audio": None}
         except OpenAIError as e:
             print("An error occurred while communicating with the OpenAI API.")
         task1 = asyncio.create_task(
@@ -43,8 +45,10 @@ class ChatbotAPI:
         task2 = asyncio.create_task(
             asyncio.to_thread(self.print_chat, response_content)
         )
-        await task1
+        audio_response = await task1
         await task2
+
+        return {"text": response_content, "audio": audio_response}
 
     def print_chat(self, response_text: str):
         """Print the latest chat response."""
@@ -72,11 +76,11 @@ class ChatbotAPI:
         speech_file.parent.mkdir(parents=True, exist_ok=True)
         try:
             response = self.client.audio.speech.create(
-                model="tts-1-hd", voice="echo", input=response_text
+                model=self.model_audio, voice="echo", input=response_text
             )
             print(f"Generating speech audio at: {response}")
             response.stream_to_file(speech_file)
-            playsound(speech_file)
+            return str(speech_file)
         except OpenAIError as e:
             print(f"An error occurred while generating speech audio. {e}")
         except AuthenticationError as e:

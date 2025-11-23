@@ -1,0 +1,4 @@
+{
+    "api_key": "your-client-api-key-here",
+    "uri": "ws://127.0.0.1:8765"
+}
