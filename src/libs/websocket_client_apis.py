@@ -47,8 +47,8 @@ class WebSocketClientAPI:
                     if json.loads(server_response)['audio'] is not None:
                         playsound.playsound(json.loads(server_response)['audio'])
 
-        except websockets.ConnectionClosed:
-            print("Connection closed by the server.")
+        except websockets.ConnectionClosed as e:
+            print(f"Connection closed by the server: {e}")
         except Exception as e:
             print(f"Error: {e}")
         except KeyboardInterrupt:

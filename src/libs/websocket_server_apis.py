@@ -17,7 +17,7 @@ class WebSocketServerAPI:
     async def start(self) -> None:
         """Start the WebSocket server."""
         try:
-            async with websockets.serve(self.handle_connection, self.host, self.port, open_timeout=None):
+            async with websockets.serve(self.handle_connection, self.host, self.port, open_timeout=None, ping_timeout=60):
                 print(f"WebSocket server started at ws://{self.host}:{self.port}")
                 await asyncio.Future()  # Run forever
         except Exception as e:
