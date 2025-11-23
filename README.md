@@ -26,23 +26,8 @@ Approach to this problem:
 There are 2 main function in this code, for **Server**(websocket_server_apis.py) and **Client**(websocket_client_main.py)
 The configs for the server and client can be foud in the `libs -> config` where the user can add the api key on the client side.
 
-└── websocket_llm_service
-    ├── README.md
-    ├── requirement.txt
-    └── src
-        ├── audio
-        ├── libs
-        │   ├── audio
-        │   ├── chatbot_apis.py
-        │   ├── common_functions.py
-        │   ├── configs
-        │   │   ├── client_config.json
-        │   │   └── server_config.json
-        │   ├── __init__.py
-        │   ├── websocket_client_apis.py
-        │   └── websocket_server_apis.py
-        ├── websocket_client_main.py
-        └── websocket_server_main.py
+<img width="252" height="323" alt="image" src="https://github.com/user-attachments/assets/dfae40ea-2966-4f2c-b278-b9597a7407ad" />
+
 
 ### Starting the code
 - Add the api key to the file `src->libs->config->client_config.json` at `"api_key": "your-client-api-key-here"`
