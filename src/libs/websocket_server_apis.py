@@ -30,8 +30,8 @@ class WebSocketServerAPI:
             
             # create OpenAI client and ChatbotAPI instance
             client = OpenAI(api_key=self.config_args.api_key)
-            chatbot_api = ChatbotAPI(client, model=self.config_args.model)
             
+            chatbot_api = ChatbotAPI(client, model_text=self.config_args.model_text, model_audio=self.config_args.model_audio)
             async for message in websocket:
                 print(f"You: {message}")
                 await chatbot_api.send_message(message)
