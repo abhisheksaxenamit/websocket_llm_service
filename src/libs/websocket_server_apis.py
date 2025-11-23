@@ -21,9 +21,29 @@ class WebSocketServerAPI:
             print(f"WebSocket server started at ws://{self.host}:{self.port}")
             await asyncio.Future()  # Run forever
     
+    async def do_api_handshake(self, websocket) -> str:
+        """ Perform API handshake to get api_key from client."""
+        raw_handshake = await websocket.recv()
+        try:
+            print(f"Received handshake: {raw_handshake}")
+            handshake = json.loads(raw_handshake)
+            self.client_api_key = handshake.get("api_key")
+            if not self.client_api_key:
+                await websocket.send(json.dumps({"error": "missing api_key in handshake"}))
+                await websocket.close(code=4000, reason="Missing api_key")
+                return
+
+            # Acknowledge successful handshake
+            await websocket.send(json.dumps({"status": "handshake_ok"}))
+        except json.JSONDecodeError:
+            await websocket.send(json.dumps({"error": "invalid handshake JSON"}))
+            await websocket.close(code=4001, reason="Invalid JSON")
+            return
+    
     async def handle_connection(self, websocket) -> None:
         """ Handling incoming WebSocket connections."""
         print(f"Client connected to {websocket.remote_address}")
+        await self.do_api_handshake(websocket)
 
         try:                
             # Create OpenAI client and ChatbotAPI for this connection
