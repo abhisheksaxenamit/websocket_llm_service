@@ -36,6 +36,7 @@ class ChatbotAPI:
             self.context.append({"role": "assistant", "content": response_content})
         except AuthenticationError as e:
             print("Authentication failed. Please check your API key.")
+            return {"text": "Authentication failed. Please check your API key.", "audio": None}
         except OpenAIError as e:
             print("An error occurred while communicating with the OpenAI API.")
         task1 = asyncio.create_task(
@@ -46,13 +47,8 @@ class ChatbotAPI:
         )
         audio_response = await task1
         await task2
-        
-        client_response = \
-        {
-            "text": response_content,
-            "audio": audio_response
-        }
-        return client_response
+
+        return {"text": response_content, "audio": audio_response}
 
     def print_chat(self, response_text: str):
         """Print the latest chat response."""

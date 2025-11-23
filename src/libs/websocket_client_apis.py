@@ -36,7 +36,8 @@ class WebSocketClientAPI:
                     server_response = await websocket.recv()
                     
                     print(f"Client received: {json.loads(server_response)['text']}")
-                    playsound.playsound(json.loads(server_response)['audio'])
+                    if json.loads(server_response)['audio'] is not None:
+                        playsound.playsound(json.loads(server_response)['audio'])
                     # player = vlc.MediaPlayer(json.loads(server_response)['audio'])
                     # player.play()
         except websockets.ConnectionClosed:
