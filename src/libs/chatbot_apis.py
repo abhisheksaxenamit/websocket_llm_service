@@ -44,8 +44,15 @@ class ChatbotAPI:
         task2 = asyncio.create_task(
             asyncio.to_thread(self.print_chat, response_content)
         )
-        await task1
+        audio_response = await task1
         await task2
+        
+        client_response = \
+        {
+            "text": response_content,
+            "audio": audio_response
+        }
+        return client_response
 
     def print_chat(self, response_text: str):
         """Print the latest chat response."""
@@ -77,7 +84,7 @@ class ChatbotAPI:
             )
             print(f"Generating speech audio at: {response}")
             response.stream_to_file(speech_file)
-            playsound(speech_file)
+            return str(speech_file)
         except OpenAIError as e:
             print(f"An error occurred while generating speech audio. {e}")
         except AuthenticationError as e:
