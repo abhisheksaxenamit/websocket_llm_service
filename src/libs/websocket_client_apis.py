@@ -4,7 +4,7 @@ import websockets
 import playsound
 from pathlib import Path
 import json
-import vlc
+
 
 
 class WebSocketClientAPI:
@@ -16,30 +16,37 @@ class WebSocketClientAPI:
         self.config_args = config_args
     
     async def openai_chat_bot(self):
+        """ Open connection to websocket server and chat with the openai bot."""
         try:
             async with websockets.connect(self.uri, ) as websocket:
-                # Perform API handshake
+                # Perform API handshake needed to send api_key
                 handshake_request = self.create_api_handshake()
                 await websocket.send(handshake_request)
                 handshake_response = await websocket.recv()
                 print(f"Handshake response from server: {handshake_response}")
                 
+                # Chat loop with the server
                 while True:
                     message = input("Client! Ask the assistant (exit to quit): ")
+                    
+                    # Exit condition
                     if message.lower() in ['exit', 'quit']:
                         print("Exiting...")
                         await websocket.close()
                         break
+                    
+                    # Send message to server
                     await websocket.send(message)
                     print(f'Client sent: {message}')
 
                     server_response = await websocket.recv()
+                    # Display server response
+                    print(f"Assistant: {json.loads(server_response)['text']}")
                     
-                    print(f"Client received: {json.loads(server_response)['text']}")
+                    # play audio response if available
                     if json.loads(server_response)['audio'] is not None:
                         playsound.playsound(json.loads(server_response)['audio'])
-                    # player = vlc.MediaPlayer(json.loads(server_response)['audio'])
-                    # player.play()
+
         except websockets.ConnectionClosed:
             print("Connection closed by the server.")
         except Exception as e:
@@ -47,7 +54,6 @@ class WebSocketClientAPI:
         except KeyboardInterrupt:
             print("Client interrupted and exiting.")
             await websocket.close()
-            # playsound.playsound(None)
 
     def create_api_handshake(self):
         """ Create JSON data for communication."""
