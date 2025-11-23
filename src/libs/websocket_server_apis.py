@@ -1,7 +1,10 @@
 import asyncio
-
 import websockets
-
+from libs.chatbot_apis import ChatbotAPI
+from argparse import Namespace
+from libs.common_functions import load_config_from_json
+from pathlib import Path
+from openai import OpenAI
 
 class WebSocketServerAPI:
     """Websocket server API to handle client connections."""
@@ -19,13 +22,21 @@ class WebSocketServerAPI:
     
     async def handle_connection(self, websocket) -> None:
         """ Handling incoming WebSocket connections."""
-        print(f"Client connected {websocket.remote_address}")
+        print(f"Client connected to {websocket.remote_address}")
         try:
+            # get the server configuration
+            config_path = Path(__file__).parent / 'configs' / 'server_config.json'
+            self.config_args = load_config_from_json(config_path)
+            
+            # create OpenAI client and ChatbotAPI instance
+            client = OpenAI(api_key=self.config_args.api_key)
+            chatbot_api = ChatbotAPI(client, model=self.config_args.model)
+            
             async for message in websocket:
-                print(f"Received message: {message}")
-                response = f"Echo: {message}"
-                await websocket.send(response)
-                print(f"Sent response: {response}")
+                print(f"You: {message}")
+                await chatbot_api.send_message(message)
+
         except websockets.ConnectionClosed:
             print("Client disconnected")
-    
+        except Exception as e:
+            print(f"Error: {e}")
