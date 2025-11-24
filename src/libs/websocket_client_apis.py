@@ -4,6 +4,7 @@ import websockets
 import playsound
 from pathlib import Path
 import json
+from libs.common_functions import log_message
 
 
 
@@ -23,7 +24,7 @@ class WebSocketClientAPI:
                 handshake_request = self.create_api_handshake()
                 await websocket.send(handshake_request)
                 handshake_response = await websocket.recv()
-                print(f"Handshake response from server: {handshake_response}")
+                log_message("Client", f"Handshake response from server: {handshake_response}")
                 
                 # Chat loop with the server
                 while True:
@@ -32,31 +33,39 @@ class WebSocketClientAPI:
                     # Exit condition
                     if message.lower() in ['exit', 'quit']:
                         print("Exiting...")
+                        log_message("Client", "Client exiting the chat loop.")
                         await websocket.close()
                         break
                     
                     # Send message to server
                     await websocket.send(message)
-                    print(f'Client sent: {message}')
+                    log_message("Client", f'Client sent: {message}')
 
                     server_response = await websocket.recv()
                     # Display server response
                     print(f"Assistant: {json.loads(server_response)['text']}")
+                    log_message("Client", f'Server response: {server_response}')
                     
                     # play audio response if available
+                    
                     if json.loads(server_response)['audio'] is not None:
                         playsound.playsound(json.loads(server_response)['audio'])
+                        log_message("Client", 'Played audio response')
 
         except websockets.ConnectionClosed as e:
             print(f"Connection closed by the server: {e}")
+            log_message("Client", f"Connection closed by the server: {e}", level='error')
         except Exception as e:
             print(f"Error: {e}")
+            log_message("Client", f"Error: {e}", level='error')
         except KeyboardInterrupt:
             print("Client interrupted and exiting.")
+            log_message("Client", "Client interrupted and exiting.", level='error')
             await websocket.close()
 
     def create_api_handshake(self):
         """ Create JSON data for communication."""
+        log_message("Client", "Creating API handshake data as JSON...")
         data = {
             "api_key": self.config_args.api_key
         }
